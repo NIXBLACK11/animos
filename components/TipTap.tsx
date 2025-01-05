@@ -63,7 +63,7 @@ export const TipTap = () => {
     content: '<p>Hello World! 🌎️</p>',
     editorProps: {
 		attributes: {
-			class: `prose prose-sm m-5 focus:outline-none max-w-full [&_ol]:list-decimal [&_ol]:text-black [&_ul]:list-disc text-black [&_ul]:text-black [&_table]:border [&_table]:border-collapse [&_table]:w-full [&_th]:border [&_th]:border-gray-300 [&_th]:px-4 [&_th]:py-2 [&_td]:border [&_td]:border-gray-300 [&_td]:px-4 [&_td]:py-2 [&_tr:nth-child(even)]:bg-gray-100`,
+			class: `prose prose-sm m-5 focus:outline-none max-w-full h-full [&_ol]:list-decimal [&_ol]:text-black [&_ul]:list-disc text-black [&_ul]:text-black [&_table]:border [&_table]:border-collapse [&_table]:w-full [&_th]:border [&_th]:border-gray-300 [&_th]:px-4 [&_th]:py-2 [&_td]:border [&_td]:border-gray-300 [&_td]:px-4 [&_td]:py-2 [&_tr:nth-child(even)]:bg-gray-100`,
 		},
     },
   });
@@ -157,7 +157,7 @@ export const TipTap = () => {
 			</div>
 		</div>
 
-		<EditorContent editor={editor} />
+		<EditorContent editor={editor} className='h-full w-full'/>
 	</div>
   )
 }
