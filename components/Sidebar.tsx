@@ -1,5 +1,4 @@
 import { FiSidebar } from "react-icons/fi";
-import DriveUploader from "./DriveUploader";
 
 interface SideBarProps {
     hide: boolean;
@@ -24,7 +23,6 @@ export const Sidebar: React.FC<SideBarProps> = ({ hide, setHide }) => {
                     <FiSidebar />
                 </button>
             </div>
-            <DriveUploader />
         </div>
     )
 }
