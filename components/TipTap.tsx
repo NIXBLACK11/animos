@@ -15,11 +15,16 @@ import TableRow from '@tiptap/extension-table-row'
 
 import {common, createLowlight} from 'lowlight'
 import { FaAngleDown, FaBold, FaHeading, FaItalic, FaListOl, FaListUl, FaStrikethrough, FaTable } from 'react-icons/fa'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const lowlight = createLowlight(common)
 
-export const TipTap = () => {
+interface TipTapProps {
+	initialText: string;
+	setFileText: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 	const [showTableDropdown, setShowTableDropdown] = useState(false);
 	const [showHeadingDropdown, setShowHeadingDropdown] = useState(false);
 
@@ -60,13 +65,24 @@ export const TipTap = () => {
 		TableHeader,
 		TableCell,
 		],
-		content: '<p>Hello World! 🌎️</p>',
+		content: '',
 		editorProps: {
 			attributes: {
 				class: `bg-[#0F0F10] text-[#ffffff] prose prose-sm m-5 focus:outline-none max-w-full h-full [&_ol]:list-decimal [&_ol]:text-white [&_ul]:list-disc [&_ul]:text-white [&_table]:border [&_table]:border-collapse [&_table]:w-full [&_th]:border [&_th]:border-gray-600 [&_th]:bg-[#333333] [&_th]:text-white [&_th]:px-4 [&_th]:py-2 [&_td]:border [&_td]:border-gray-600 [&_td]:bg-[#1a1a1a] [&_td]:text-white [&_td]:px-4 [&_td]:py-2 [&_tr:nth-child(even)]:bg-[#222222] [&_strong]:text-white [&_em]:text-white [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_h4]:text-white [&_h5]:text-white [&_h6]:text-white [&_s]:text-white`,
 			},
 		},
+		onUpdate: ({ editor }) => {
+            const currentText = editor.getHTML();
+            setFileText(currentText);
+        },
 	});
+
+	useEffect(() => {
+		// For first time only
+		if (editor) {
+		  editor.commands.setContent(initialText);
+		}
+	}, [initialText]);
 
 	return (
 		<div className="w-full h-full flex flex-col bg-[#0F0F10]">

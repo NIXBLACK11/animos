@@ -1,22 +1,23 @@
 "use client"
 
-import { useEffect, useState } from "react";
-
-import { TipTap } from "@/components/TipTap";
 import { FiSidebar } from "react-icons/fi";
+import { fileState, rootState } from "@/states/state";
+import { useEffect, useState } from "react";
+import { TipTap } from "@/components/TipTap";
 import { Sidebar } from "@/components/Sidebar";
+import { FolderStructure } from "@/types/FolderStructure";
 import { SelectFolder } from "@/components/ui/SelectFolder";
 import { getFolderStructure } from "@/utils/getFolderStructure";
-import { FolderStructure } from "@/types/FolderStructure";
+import { useAtom } from "jotai";
 
 export default function Home() {
     const [hide, setHide] = useState<boolean>(false);
-    const [selectedPath, setSelectedPath] = useState<FileSystemDirectoryHandle | null>(null);
+    const [rootPath, setRootPath] = useAtom(rootState);
+    const [filePath, setFilePath] = useAtom(fileState);
+    const [initialText, setInitialText] = useState("");
+    const [fileText, setFileText] = useState("");
     const [fileStructure, setFileStructure] = useState<FolderStructure>();
-
-    const handleFileSelect = () => {
-        console.log("Here")
-    }
+    const [selectedPath, setSelectedPath] = useState<FileSystemDirectoryHandle | null>(null);
 
     useEffect(() => {
         if(!selectedPath) {
@@ -24,13 +25,31 @@ export default function Home() {
         }
 
         const fetchStructure = async () => {
+            setRootPath(selectedPath.name);
             const structure: FolderStructure = await getFolderStructure(selectedPath);
-            console.log(structure);
             setFileStructure(structure);
         }
 
         fetchStructure();
     }, [selectedPath]);
+
+    useEffect(() => {
+        if(filePath=="") {
+            return;
+        }
+
+        const fetchFileText = async () => {
+            // const fileData: string = await fetchFileData(filePath);
+            
+            setInitialText("Hello World");
+        }
+
+        fetchFileText();
+    }, [filePath]);
+
+    useEffect(() => {
+        console.log(fileText);
+    }, [fileText]);
 
     return (
         <div className="h-screen w-screen max-w-screen overflow-x-hidden text-white bg-[#0F0F10]">
@@ -42,11 +61,11 @@ export default function Home() {
                         <div className="w-full h-full flex flex-row">
                             <div className="w-2/12 flex flex-col justify-between bg-[#0A0A0A]">
                                 {fileStructure && (
-                                    <Sidebar hide={hide} setHide={setHide} structure={fileStructure} onFileSelect={handleFileSelect}/>
+                                    <Sidebar hide={hide} setHide={setHide} structure={fileStructure}/>
                                 )}
                             </div>
                             <div className="w-10/12">
-                                <TipTap />
+                                <TipTap initialText={initialText} setFileText={setFileText}/>
                             </div>
                         </div>
                     :
@@ -64,7 +83,7 @@ export default function Home() {
                                     </div>
                             </div>
                             <div className="w-[97%]">
-                                <TipTap />
+                                <TipTap initialText={initialText} setFileText={setFileText}/>
                             </div>
                         </div>
                     }   

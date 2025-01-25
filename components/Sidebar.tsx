@@ -6,10 +6,9 @@ interface SideBarProps {
     hide: boolean;
     setHide: React.Dispatch<React.SetStateAction<boolean>>;
     structure: FolderStructure;
-    onFileSelect?: (file: FolderStructure) => void;
 }
 
-export const Sidebar: React.FC<SideBarProps> = ({ hide, setHide, structure, onFileSelect }) => {
+export const Sidebar: React.FC<SideBarProps> = ({ hide, setHide, structure }) => {
     return (
         <div className="flex flex-col">
             <div className="flex flex-row justify-between items-center m-4">
@@ -27,7 +26,7 @@ export const Sidebar: React.FC<SideBarProps> = ({ hide, setHide, structure, onFi
                     <FiSidebar />
                 </button>
             </div>
-            <FolderTree structure={structure} onFileSelect={onFileSelect}/>
+            <FolderTree structure={structure} />
         </div>
     )
 }

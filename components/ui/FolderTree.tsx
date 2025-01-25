@@ -1,25 +1,31 @@
+import { fileState } from '@/states/state';
 import { FolderStructure } from '@/types/FolderStructure';
 import React, { useState } from 'react';
 import { FaChevronRight, FaChevronDown, FaFile, FaFolder } from 'react-icons/fa';
+import { useAtom } from "jotai";
 
 interface FolderItemProps {
 	item: FolderStructure;
-	onItemClick: (item: FolderStructure) => void;
+	currPath?: string;
 	depth?: number;
 }
 
 const FolderItem: React.FC<FolderItemProps> = ({
-	item, 
-	onItemClick, 
+	item,
+	currPath = "",
 	depth = 0 
 }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
+	const [filePath, setFilePath] = useAtom(fileState);
 
 	const handleClick = () => {
 		if (item.type === 'folder') {
 			setIsExpanded(!isExpanded);
+		} else {
+			const updatedFilePath = currPath + "/" + item.name;
+			setFilePath(updatedFilePath);
+			console.log(filePath);
 		}
-		onItemClick(item);
 	};
 
 	return (
@@ -47,8 +53,8 @@ const FolderItem: React.FC<FolderItemProps> = ({
 					{Object.entries(item.children).map(([childName, child]) => (
 						<FolderItem 
 							key={childName}
-							item={child} 
-							onItemClick={onItemClick} 
+							item={child}
+							currPath={currPath + "/" + item.name}
 							depth={depth + 1} 
 						/>
 				))}
@@ -64,21 +70,13 @@ interface FolderTreeProps {
 }
 
 export default function FolderTree({ 
-	structure, 
-	onFileSelect = () => {} 
+	structure,
 }: FolderTreeProps) {
-	const handleItemClick = (item: FolderStructure) => {
-		if (item.type === 'file') {
-			onFileSelect(item);
-		}
-	};
-
 	return (
 		<div className="bg-[#0A0A0A] min-h-screen p-4">
-			<div className="bg-[#1A1A1E] rounded-lg p-2">
+			<div className="bg-[#0A0A0A] rounded-lg p-2">
 				<FolderItem 
-					item={structure} 
-					onItemClick={handleItemClick} 
+					item={structure}
 				/>
 			</div>
 		</div>
