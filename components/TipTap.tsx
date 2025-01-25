@@ -86,7 +86,7 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 
 	return (
 		<div className="w-full h-full flex flex-col bg-[#0F0F10]">
-			<div className="flex items-center p-2 space-x-1 text-[#ffffff]">
+			<div className="flex items-center p-2 space-x-1 text-[#ffffff] bg-[#141415]">
 				<button
 					className={`p-2 hover:bg-gray-800 rounded-lg transition-colors ${editor?.isActive("bold") ? "is-active" : ""}`}
 					onClick={() => editor?.chain().focus().toggleBold().run()}

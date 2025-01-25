@@ -65,7 +65,35 @@ export default function Home() {
     }, [filePath]);
 
     useEffect(() => {
-        console.log(fileText);
+        if (!fileText || !filePath || !selectedPath) {
+            return;
+        }
+    
+        const updateFileText = async () => {
+            try {
+                const pathParts = filePath.split("/");
+    
+                let currentDirHandle = selectedPath;
+    
+                for (let i = 2; i < pathParts.length - 1; i++) {
+                    const folderName = pathParts[i];
+                    currentDirHandle = await currentDirHandle.getDirectoryHandle(folderName, { create: false });
+                }
+    
+                const fileName = pathParts[pathParts.length - 1];
+                const fileHandle = await currentDirHandle.getFileHandle(fileName, { create: false });
+
+                const writableStream = await fileHandle.createWritable();
+                await writableStream.write(fileText);
+                await writableStream.close();
+    
+                console.log("File updated successfully!");
+            } catch (err) {
+                console.error("Error updating file:", err);
+            }
+        };
+    
+        updateFileText();
     }, [fileText]);
 
     return (
