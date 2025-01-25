@@ -34,14 +34,31 @@ export default function Home() {
     }, [selectedPath]);
 
     useEffect(() => {
-        if(filePath=="") {
+        if(!filePath || !selectedPath) {
             return;
         }
 
         const fetchFileText = async () => {
-            // const fileData: string = await fetchFileData(filePath);
-            
-            setInitialText("Hello World");
+            try {
+                const pathParts = filePath.split("/");
+
+                let currentDirHandle = selectedPath;
+
+                for (let i = 2; i < pathParts.length - 1; i++) {
+                    const folderName = pathParts[i];
+                    currentDirHandle = await currentDirHandle.getDirectoryHandle(folderName, { create: false });
+                }
+
+                const fileName = pathParts[pathParts.length - 1];
+                const fileHandle = await currentDirHandle.getFileHandle(fileName, { create: false });
+
+                const file = await fileHandle.getFile();
+                const fileText = await file.text();
+        
+                setInitialText(fileText);
+            } catch (err) {
+                console.error("Error reading file:", err);
+            }
         }
 
         fetchFileText();
