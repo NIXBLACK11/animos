@@ -7,29 +7,43 @@ import { FiSidebar } from "react-icons/fi";
 import { Sidebar } from "@/components/Sidebar";
 import { SelectFolder } from "@/components/ui/SelectFolder";
 import { getFolderStructure } from "@/utils/getFolderStructure";
+import { FolderStructure } from "@/types/FolderStructure";
 
 export default function Home() {
     const [hide, setHide] = useState<boolean>(false);
-    const [selectedPath, setSelectedPath] = useState('');
+    const [selectedPath, setSelectedPath] = useState<FileSystemDirectoryHandle | null>(null);
+    const [fileStructure, setFileStructure] = useState<FolderStructure>();
+
+    const handleFileSelect = () => {
+        console.log("Here")
+    }
 
     useEffect(() => {
-        if(selectedPath=="") {
+        if(!selectedPath) {
             return;
         }
 
-        getFolderStructure(selectedPath);
+        const fetchStructure = async () => {
+            const structure: FolderStructure = await getFolderStructure(selectedPath);
+            console.log(structure);
+            setFileStructure(structure);
+        }
+
+        fetchStructure();
     }, [selectedPath]);
 
     return (
         <div className="h-screen w-screen max-w-screen overflow-x-hidden text-white bg-[#0F0F10]">
-            {(selectedPath=="") ? 
+            {(!selectedPath) ? 
                 <SelectFolder selectedPath={selectedPath} setSelectedPath={setSelectedPath}/>
             :
                 <>
                     {(!hide) ? 
                         <div className="w-full h-full flex flex-row">
                             <div className="w-2/12 flex flex-col justify-between bg-[#0A0A0A]">
-                                <Sidebar hide={hide} setHide={setHide}/>
+                                {fileStructure && (
+                                    <Sidebar hide={hide} setHide={setHide} structure={fileStructure} onFileSelect={handleFileSelect}/>
+                                )}
                             </div>
                             <div className="w-10/12">
                                 <TipTap />

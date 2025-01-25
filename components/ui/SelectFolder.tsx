@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { FaCirclePlus, FaFolder } from 'react-icons/fa6';
 
 type SelectFolderProps = {
-    selectedPath: string;
-    setSelectedPath: React.Dispatch<React.SetStateAction<string>>;
+    selectedPath: FileSystemDirectoryHandle | null;
+    setSelectedPath: React.Dispatch<React.SetStateAction<FileSystemDirectoryHandle | null>>;
   };
   
 export const SelectFolder: React.FC<SelectFolderProps> = ({ selectedPath, setSelectedPath }) => {    
@@ -16,7 +16,7 @@ export const SelectFolder: React.FC<SelectFolderProps> = ({ selectedPath, setSel
                     create: true,
                 });
                 
-                setSelectedPath(animosVaultHandle.name);
+                setSelectedPath(animosVaultHandle);
             } else {
                 alert("Your browser doesn't support folder creation.");
             }
@@ -29,10 +29,8 @@ export const SelectFolder: React.FC<SelectFolderProps> = ({ selectedPath, setSel
         try {
             if (window.showDirectoryPicker) {
                 const directoryHandle = await window.showDirectoryPicker();
-                const folderName = directoryHandle.name;
-                setSelectedPath(folderName);
 
-                setSelectedPath(folderName);
+                setSelectedPath(directoryHandle);
             } else {
                 alert("Your browser doesn't support folder selection.");
             }
@@ -73,7 +71,7 @@ export const SelectFolder: React.FC<SelectFolderProps> = ({ selectedPath, setSel
 
             {selectedPath && (
             <div className="mt-4 text-sm text-gray-400 text-center">
-                Selected Path: {selectedPath}
+                Selected Path: {selectedPath.name}
             </div>
             )}
         </div>

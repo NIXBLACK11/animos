@@ -1,11 +1,15 @@
 import { FiSidebar } from "react-icons/fi";
+import FolderTree from "./ui/FolderTree";
+import { FolderStructure } from "@/types/FolderStructure";
 
 interface SideBarProps {
     hide: boolean;
     setHide: React.Dispatch<React.SetStateAction<boolean>>;
+    structure: FolderStructure;
+    onFileSelect?: (file: FolderStructure) => void;
 }
 
-export const Sidebar: React.FC<SideBarProps> = ({ hide, setHide }) => {
+export const Sidebar: React.FC<SideBarProps> = ({ hide, setHide, structure, onFileSelect }) => {
     return (
         <div className="flex flex-col">
             <div className="flex flex-row justify-between items-center m-4">
@@ -23,6 +27,7 @@ export const Sidebar: React.FC<SideBarProps> = ({ hide, setHide }) => {
                     <FiSidebar />
                 </button>
             </div>
+            <FolderTree structure={structure} onFileSelect={onFileSelect}/>
         </div>
     )
 }
