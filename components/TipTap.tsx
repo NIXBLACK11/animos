@@ -1,11 +1,10 @@
 'use client'
 
 import { useEditor, EditorContent } from '@tiptap/react'
-
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import StarterKit from '@tiptap/starter-kit'
 import Document from '@tiptap/extension-document'
-import Heading from '@tiptap/extension-heading'
+import Heading, { Level } from '@tiptap/extension-heading'
 import Paragraph from '@tiptap/extension-paragraph'
 import Text from '@tiptap/extension-text'
 import Table from '@tiptap/extension-table'
@@ -13,7 +12,7 @@ import TableCell from '@tiptap/extension-table-cell'
 import TableHeader from '@tiptap/extension-table-header'
 import TableRow from '@tiptap/extension-table-row'
 
-import {common, createLowlight} from 'lowlight'
+import { common, createLowlight } from 'lowlight'
 import { FaAngleDown, FaBold, FaHeading, FaItalic, FaListOl, FaListUl, FaStrikethrough, FaTable } from 'react-icons/fa'
 import { useEffect, useState } from 'react'
 
@@ -48,22 +47,22 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 
 	const editor = useEditor({
 		extensions: [
-		StarterKit,
-		Document,
-		Paragraph,
-		Text,
-		Heading.configure({
-			levels: [1, 2, 3],
-		}),
-		CodeBlockLowlight.configure({
-			lowlight,
-		}),
-		Table.configure({
-			resizable: true,
-		}),
-		TableRow,
-		TableHeader,
-		TableCell,
+			StarterKit,
+			Document,
+			Paragraph,
+			Text,
+			Heading.configure({
+				levels: [1, 2, 3],
+			}),
+			CodeBlockLowlight.configure({
+				lowlight,
+			}),
+			Table.configure({
+				resizable: true,
+			}),
+			TableRow,
+			TableHeader,
+			TableCell,
 		],
 		content: '',
 		editorProps: {
@@ -72,15 +71,15 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 			},
 		},
 		onUpdate: ({ editor }) => {
-            const currentText = editor.getHTML();
-            setFileText(currentText);
-        },
+			const currentText = editor.getHTML();
+			setFileText(currentText);
+		},
 	});
 
 	useEffect(() => {
 		// For first time only
 		if (editor) {
-		  editor.commands.setContent(initialText);
+			editor.commands.setContent(initialText);
 		}
 	}, [initialText]);
 
@@ -120,15 +119,15 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 					{showHeadingDropdown && (
 						<div className="absolute top-full left-0 mt-1 bg-black border border-gray-200 rounded-lg shadow-lg py-1 w-40 z-10">
 							{headingOptions.map((option, index) => (
-							<button
-								key={option}
-								className={`w-full px-4 py-2 text-left hover:bg-gray-800 transition-colors ${editor?.isActive('heading', { level: index + 1 }) ? 'is-active' : ''}`}
-								onClick={() =>
-									editor?.chain().focus().toggleHeading({ level: index + 1 }).run()
-								}
-							>
-								{option}
-							</button>
+								<button
+									key={option}
+									className={`w-full px-4 py-2 text-left hover:bg-gray-800 transition-colors ${editor?.isActive('heading', { level: (index + 1) as Level }) ? 'is-active' : ''}`}
+									onClick={() =>
+										editor?.chain().focus().toggleHeading({ level: (index + 1) as Level }).run()
+									}
+								>
+									{option}
+								</button>
 							))}
 						</div>
 					)}
@@ -149,31 +148,31 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 				</button>
 
 				<div className="relative">
-				<button
-					className="flex items-center p-2 hover:bg-gray-800 rounded-lg transition-colors"
-					onClick={() => setShowTableDropdown(!showTableDropdown)}
-				>
-					<FaTable />
-					<FaAngleDown size={16} className="ml-1" />
-				</button>
+					<button
+						className="flex items-center p-2 hover:bg-gray-800 rounded-lg transition-colors"
+						onClick={() => setShowTableDropdown(!showTableDropdown)}
+					>
+						<FaTable />
+						<FaAngleDown size={16} className="ml-1" />
+					</button>
 
-				{showTableDropdown && (
-					<div className="absolute top-full left-0 mt-1 bg-black border border-gray-200 rounded-lg shadow-lg py-1 w-40 z-10">
-					{tableOptions.map((option, index) => (
-						<button
-						key={index}
-						className="w-full px-4 py-2 text-left hover:bg-gray-800 transition-colors"
-						onClick={option.action}
-						>
-						{option.label}
-						</button>
-					))}
-					</div>
-				)}
+					{showTableDropdown && (
+						<div className="absolute top-full left-0 mt-1 bg-black border border-gray-200 rounded-lg shadow-lg py-1 w-40 z-10">
+							{tableOptions.map((option, index) => (
+								<button
+									key={index}
+									className="w-full px-4 py-2 text-left hover:bg-gray-800 transition-colors"
+									onClick={option.action}
+								>
+									{option.label}
+								</button>
+							))}
+						</div>
+					)}
 				</div>
 			</div>
 
-			<EditorContent editor={editor} className='h-full w-full mt-10'/>
+			<EditorContent editor={editor} className='h-full w-full mt-10' />
 		</div>
 	)
 }

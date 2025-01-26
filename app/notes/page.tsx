@@ -14,13 +14,13 @@ export default function Home() {
     const [fileText, setFileText] = useState("");
     const [updateStructure, setUpdateStructure] = useState(false);
     const [hide, setHide] = useState<boolean>(false);
-    const [rootPath, setRootPath] = useAtom(rootState);
-    const [filePath, setFilePath] = useAtom(fileState);
+    const [, setRootPath] = useAtom(rootState);
+    const [filePath, ] = useAtom(fileState);
     const [initialText, setInitialText] = useState("");
-    const [newCompPath, setNewCompPath] = useAtom(newCompPathState);
+    const [newCompPath, ] = useAtom(newCompPathState);
     const [fileStructure, setFileStructure] = useState<FolderStructure>();
-    const [createFileName, _setCreateFileName] = useAtom(createFileState);
-    const [createFolderName, _setCreateFolderName] = useAtom(createFolderState);
+    const [createFileName, ] = useAtom(createFileState);
+    const [createFolderName, ] = useAtom(createFolderState);
     const [selectedPath, setSelectedPath] = useState<FileSystemDirectoryHandle | null>(null);
 
     useEffect(() => {

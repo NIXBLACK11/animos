@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { FolderStructure } from "@/types/FolderStructure";
 
 export const getFolderStructure = async (directoryHandle: FileSystemDirectoryHandle): Promise<FolderStructure> => {

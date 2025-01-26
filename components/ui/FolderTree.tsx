@@ -19,11 +19,11 @@ const FolderItem: React.FC<FolderItemProps> = ({
 	const [filePath, setFilePath] = useAtom(fileState);
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [showButtons, setShowButtons] = useState(false);
-	const [newCompPath, setNewCompPath] = useAtom(newCompPathState);
+	const [, setNewCompPath] = useAtom(newCompPathState);
 	const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
 	const [showNewNameInput, setShowNewNameInput] = useState("none");
-	const [_createFileName, setCreateFileName] = useAtom(createFileState);
-	const [_createFolderName, setCreateFolderName] = useAtom(createFolderState);
+	const [, setCreateFileName] = useAtom(createFileState);
+	const [, setCreateFolderName] = useAtom(createFolderState);
 
 	const handleClick = () => {
 		if (item.type === 'folder') {
