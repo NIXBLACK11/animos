@@ -1,7 +1,7 @@
 "use client"
 
 import { FiSidebar } from "react-icons/fi";
-import { fileState, rootState } from "@/states/state";
+import { createFileState, createFolderState, fileState, newCompPathState, rootState } from "@/states/state";
 import { useEffect, useState } from "react";
 import { TipTap } from "@/components/TipTap";
 import { Sidebar } from "@/components/Sidebar";
@@ -11,12 +11,16 @@ import { getFolderStructure } from "@/utils/getFolderStructure";
 import { useAtom } from "jotai";
 
 export default function Home() {
+    const [fileText, setFileText] = useState("");
+    const [updateStructure, setUpdateStructure] = useState(false);
     const [hide, setHide] = useState<boolean>(false);
     const [rootPath, setRootPath] = useAtom(rootState);
     const [filePath, setFilePath] = useAtom(fileState);
     const [initialText, setInitialText] = useState("");
-    const [fileText, setFileText] = useState("");
+    const [newCompPath, setNewCompPath] = useAtom(newCompPathState);
     const [fileStructure, setFileStructure] = useState<FolderStructure>();
+    const [createFileName, _setCreateFileName] = useAtom(createFileState);
+    const [createFolderName, _setCreateFolderName] = useAtom(createFolderState);
     const [selectedPath, setSelectedPath] = useState<FileSystemDirectoryHandle | null>(null);
 
     useEffect(() => {
@@ -31,7 +35,7 @@ export default function Home() {
         }
 
         fetchStructure();
-    }, [selectedPath]);
+    }, [selectedPath, updateStructure]);
 
     useEffect(() => {
         if(!filePath || !selectedPath) {
@@ -95,6 +99,70 @@ export default function Home() {
     
         updateFileText();
     }, [fileText]);
+
+    useEffect(() => {
+        console.log("path", newCompPath);
+        console.log("file", createFileName);
+        if(!newCompPath || !createFileName || !selectedPath) {
+            return;
+        }
+
+        const createFile = async () => {
+            try {
+                const pathParts = newCompPath.split("/");
+            
+                let currentDirHandle = selectedPath;
+            
+                for (let i = 2; i < pathParts.length; i++) {
+                    const folderName = pathParts[i];
+                    currentDirHandle = await currentDirHandle.getDirectoryHandle(folderName, { create: false });
+                }
+            
+                const fileName = createFileName;
+            
+                await currentDirHandle.getFileHandle(fileName, { create: true });
+            
+                console.log("File created successfully!");
+                setUpdateStructure(!updateStructure);
+            } catch (err) {
+                console.error("Error creating file:", err);
+            }
+        };
+
+        createFile();
+    }, [createFileName]);
+
+    useEffect(() => {
+        console.log("path", newCompPath);
+        console.log("folder", createFolderName);
+        if(!newCompPath || !createFolderName || !selectedPath) {
+            return;
+        }
+
+        const createFolder = async () => {
+            try {
+                const pathParts = newCompPath.split("/");
+            
+                let currentDirHandle = selectedPath;
+            
+                for (let i = 2; i < pathParts.length; i++) {
+                    const folderName = pathParts[i];
+                    currentDirHandle = await currentDirHandle.getDirectoryHandle(folderName, { create: false });
+                }
+            
+                const folderName = createFolderName;
+
+                await currentDirHandle.getDirectoryHandle(folderName, { create: true });
+            
+                console.log("Folder created successfully!");
+                setUpdateStructure(!updateStructure);
+            } catch (err) {
+                console.error("Error creating folder:", err);
+            }
+        };
+
+        createFolder();
+    }, [createFolderName]);
 
     return (
         <div className="h-screen w-screen max-w-screen overflow-x-hidden text-white bg-[#0F0F10]">
