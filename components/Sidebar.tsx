@@ -10,7 +10,7 @@ interface SideBarProps {
 
 export const Sidebar: React.FC<SideBarProps> = ({ hide, setHide, structure }) => {
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col fixed w-2/12">
             <div className="flex flex-row justify-between items-center m-4">
                 <img 
                     src="icon.png"

@@ -18,27 +18,27 @@ export async function POST(req: Request) {
     console.log(messages);
 
     const result = streamText({
-        // model: deepseek('deepseek-chat'),
-        // model: openai('gpt-4o-mini'),
-        // model: google('gemini-1.5-pro-latest'),
-        model: google('gemini-1.5-flash'),
+        model: google('gemini-1.5-mini'),
         messages,
         tools: {
-            weather: tool({
-                description: 'Get the weather of a location in fahrenheit',
+            get_weather_data: tool({
+                description: 'Get the weather for the given location.',
                 parameters: z.object({
-                    location: z.string().describe('The location to get the weather for'),
+                    location: z.string().describe('The location.'),
                 }),
-                execute: async ({ location }) => {
-                    const temperature = Math.round(Math.random() * (90 - 32) + 32);
-                    return {
-                        location,
-                        temperature,
-                    };
+                execute: async ({ location }: { location: string }) => {
+                    const apiKey = process.env.OPENWEATHER_API_KEY;
+                    const response = await fetch(
+                        `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}`
+                    );
+                    const data = await response.json();
+                    console.log("Weather Tool Executed:", data); // Ensure this logs the correct data
+                    return data; // Ensure this return is passed into AI output
                 },
             }),
         },
     });
+    
     for await (const textPart of result.textStream) {
         process.stdout.write(textPart);
     }
