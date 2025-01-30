@@ -11,7 +11,6 @@ export const findContext = async (context: string) => {
         }
 
         const data = await response.json();
-        console.log("API Response:", data);
 
         return data;
     } catch (error) {

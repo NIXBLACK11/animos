@@ -26,6 +26,7 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 	const [addData, setAddData] = useState<string>("");
 	const [showSlashPopup, setShowSlashPopup] = useState(false);
 	const [showTableDropdown, setShowTableDropdown] = useState(false);
+	const [selectionTo, setSelectionTo] = useState<number | null>(null);
 	const [showHeadingDropdown, setShowHeadingDropdown] = useState(false);
 	const [slashPopupPosition, setSlashPopupPosition] = useState({ top: 0, left: 0 });
 
@@ -117,8 +118,22 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 	}, [initialText]);
 
 	useEffect(() => {
-
-	}, [addData]);
+		if (editor) {
+			editor.on("selectionUpdate", () => {
+				const { to } = editor.state.selection;
+				setSelectionTo(to);
+			});
+		}
+	}, [editor]);
+	
+	useEffect(() => {
+		if (addData && editor && selectionTo !== null) {
+			editor.commands.insertContentAt(selectionTo, "\n");
+			editor.commands.insertContentAt(selectionTo+2, addData);
+			setAddData("");
+			setSelectionTo(null);
+		}
+	}, [addData, selectionTo]);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
