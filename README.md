@@ -7,3 +7,4 @@ https://platform.deepseek.com/top_up
 https://sdk.vercel.ai/docs/getting-started/nextjs-pages-router
 https://dashboard.exa.ai/playground/search?q=blog%20post%20about%20AGI&
 https://docs.tavily.com/docs/python-sdk/tavily-search/getting-started
+https://github.com/vercel/ai/issues/1831

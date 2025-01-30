@@ -13,7 +13,7 @@ interface FolderItemProps {
 const FolderItem: React.FC<FolderItemProps> = ({
 	item,
 	currPath = "",
-	depth = 0 
+	depth = 0
 }) => {
 	const folderItemRef = useRef<HTMLDivElement>(null);
 	const [filePath, setFilePath] = useAtom(fileState);
@@ -57,13 +57,13 @@ const FolderItem: React.FC<FolderItemProps> = ({
 	useEffect(() => {
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => {
-		document.removeEventListener("mousedown", handleClickOutside);
+			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, []);
 
 	return (
 		<div ref={folderItemRef}>
-			<div 
+			<div
 				className={`flex items-center cursor-pointer hover:bg-[#2A2A2E] py-1 text-white`}
 				onClick={handleClick}
 				onContextMenu={handleRightClick} // Add right-click handler
@@ -72,78 +72,85 @@ const FolderItem: React.FC<FolderItemProps> = ({
 				{item.type === 'folder' ? (
 					isExpanded ? <FaChevronDown size={16} /> : <FaChevronRight size={16} />
 				) : null}
-				
+
 				{item.type === 'folder' ? (
 					<FaFolder className="mr-2" size={16} />
 				) : (
 					<FaFile className="mr-2" size={16} />
 				)}
-				
+
 				<span>{item.name}</span>
 			</div>
 
-			{/* Context Menu for Folders */}
 			{item.type === 'folder' && showButtons && (
 				<div
-				className="absolute bg-white border border-gray-200 shadow-lg rounded-md p-2 z-50"
-				style={{
-					top: menuPosition.y,
-					left: menuPosition.x,
-				}}
-				>
-				<button
-					className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 rounded-md"
-					onClick={() => {
-						setShowNewNameInput("folder");
-						setShowButtons(false);
+					className="absolute bg-neutral-900 border border-neutral-700 rounded-xl shadow-2xl py-2 z-50 w-64 backdrop-blur-sm bg-opacity-95 overflow-hidden"
+					style={{
+						top: menuPosition.y,
+						left: menuPosition.x,
 					}}
 				>
-					Create Folder
-				</button>
-				<button
-					className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 rounded-md"
-					onClick={() => {
-						setShowNewNameInput("file");
-						setShowButtons(false);
-					}}
-				>
-					Create File
-				</button>
-			</div>
-		)}
+					<div className="max-h-[300px] overflow-y-auto">
+						<button
+							className="w-full px-4 py-2.5 text-left hover:bg-neutral-800 transition-colors duration-150 flex items-center gap-3 text-neutral-200 text-sm font-medium focus:outline-none focus:bg-neutral-800"
+							onClick={() => {
+								setShowNewNameInput("folder");
+								setShowButtons(false);
+							}}
+						>
+							<span className="flex-shrink-0 w-5 h-5 flex items-center justify-center bg-neutral-800 rounded-md text-neutral-400">
+								📁
+							</span>
+							Create Folder
+						</button>
+						<button
+							className="w-full px-4 py-2.5 text-left hover:bg-neutral-800 transition-colors duration-150 flex items-center gap-3 text-neutral-200 text-sm font-medium focus:outline-none focus:bg-neutral-800"
+							onClick={() => {
+								setShowNewNameInput("file");
+								setShowButtons(false);
+							}}
+						>
+							<span className="flex-shrink-0 w-5 h-5 flex items-center justify-center bg-neutral-800 rounded-md text-neutral-400">
+								📄
+							</span>
+							Create File
+						</button>
+					</div>
+				</div>
+			)}
 
-		{/* Input Field for New Folder/File */}
-		{item.type === 'folder' && showNewNameInput!="none" && (
-			<div style={{ paddingLeft: `${depth * 16}px` }}>
-			<input
-				type="text"
-				className="mt-2 px-2 py-1 bg-[#2A2A2E] text-white rounded"
-				placeholder="Enter name..."
-				autoFocus
-				onBlur={() => setShowNewNameInput("none")}
-				onKeyDown={(e) => {
-				if (e.key === 'Enter') {
-					if(showNewNameInput=="file") setCreateFileName(e.currentTarget.value);
-					if(showNewNameInput=="folder") setCreateFolderName(e.currentTarget.value);
+			{/* Input Field for New Folder/File */}
+			{item.type === 'folder' && showNewNameInput != "none" && (
+				<div style={{ paddingLeft: `${depth * 16}px` }}>
+					<input
+						type="text"
+						className="mt-2 px-2 py-1 bg-[#2A2A2E] text-white rounded"
+						placeholder="Enter name..."
+						autoFocus
+						onBlur={() => setShowNewNameInput("none")}
+						onKeyDown={(e) => {
+							if (e.key === 'Enter') {
+								if (showNewNameInput == "file") setCreateFileName(e.currentTarget.value);
+								if (showNewNameInput == "folder") setCreateFolderName(e.currentTarget.value);
 
-					setShowNewNameInput("none");
-				}
-				}}
-			/>
-			</div>
-		)}
+								setShowNewNameInput("none");
+							}
+						}}
+					/>
+				</div>
+			)}
 
-		{/* Render Children if Folder is Expanded */}
+			{/* Render Children if Folder is Expanded */}
 			{item.type === 'folder' && isExpanded && item.children && (
 				<div>
 					{Object.entries(item.children).map(([childName, child]) => (
-						<FolderItem 
+						<FolderItem
 							key={childName}
 							item={child}
 							currPath={currPath + "/" + item.name}
-							depth={depth + 1} 
+							depth={depth + 1}
 						/>
-				))}
+					))}
 				</div>
 			)}
 		</div>
@@ -155,13 +162,13 @@ interface FolderTreeProps {
 	onFileSelect?: (file: FolderStructure) => void;
 }
 
-export default function FolderTree({ 
-  	structure,
+export default function FolderTree({
+	structure,
 }: FolderTreeProps) {
 	return (
 		<div className="bg-[#0A0A0A] min-h-screen p-4">
 			<div className="bg-[#0A0A0A] rounded-lg p-2">
-				<FolderItem 
+				<FolderItem
 					item={structure}
 				/>
 			</div>

@@ -1,5 +1,3 @@
-'use client'
-
 import { useEditor, EditorContent } from '@tiptap/react'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import StarterKit from '@tiptap/starter-kit'
@@ -11,10 +9,10 @@ import Table from '@tiptap/extension-table'
 import TableCell from '@tiptap/extension-table-cell'
 import TableHeader from '@tiptap/extension-table-header'
 import TableRow from '@tiptap/extension-table-row'
-
 import { common, createLowlight } from 'lowlight'
 import { FaAngleDown, FaBold, FaHeading, FaItalic, FaListOl, FaListUl, FaStrikethrough, FaTable } from 'react-icons/fa'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import { findContext } from '@/utils/aiFunctions'
 
 const lowlight = createLowlight(common)
 
@@ -24,14 +22,16 @@ interface TipTapProps {
 }
 
 export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
+	const [textContext, setTextContext] = useState("");
+	const [addData, setAddData] = useState<string>("");
+	const [showSlashPopup, setShowSlashPopup] = useState(false);
 	const [showTableDropdown, setShowTableDropdown] = useState(false);
 	const [showHeadingDropdown, setShowHeadingDropdown] = useState(false);
+	const [slashPopupPosition, setSlashPopupPosition] = useState({ top: 0, left: 0 });
 
-	const headingOptions = [
-		'H1',
-		'H2',
-		'H3',
-	];
+	const slashPopupRef = useRef<HTMLDivElement>(null);
+
+	const headingOptions = ['H1', 'H2', 'H3'];
 
 	const tableOptions = [
 		{ label: 'Insert table', action: () => editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run() },
@@ -45,21 +45,28 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 		{ label: 'Merge cells', action: () => editor?.chain().focus().mergeCells().run() },
 	];
 
+	const slashOptions = [
+		{ label: 'Search similar articles', action: () => alert('Search similar articles') },
+		{ label: 'Random', action: () => alert('Random') },
+		{ label: 'Random', action: () => alert('Random') },
+	];
+
+	const selectedTextOptions = [
+		{ label: 'Ask Ai for context', action: async () => setAddData(await findContext(textContext)) },
+		{ label: 'Bold', action: () => editor?.chain().focus().toggleBold().run() },
+		{ label: 'Italic', action: () => editor?.chain().focus().toggleItalic().run() },
+		{ label: 'Strike', action: () => editor?.chain().focus().toggleStrike().run() },
+	];
+
 	const editor = useEditor({
 		extensions: [
 			StarterKit,
 			Document,
 			Paragraph,
 			Text,
-			Heading.configure({
-				levels: [1, 2, 3],
-			}),
-			CodeBlockLowlight.configure({
-				lowlight,
-			}),
-			Table.configure({
-				resizable: true,
-			}),
+			Heading.configure({ levels: [1, 2, 3] }),
+			CodeBlockLowlight.configure({ lowlight }),
+			Table.configure({ resizable: true }),
 			TableRow,
 			TableHeader,
 			TableCell,
@@ -68,6 +75,32 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 		editorProps: {
 			attributes: {
 				class: `bg-[#0F0F10] text-[#ffffff] prose prose-sm m-5 focus:outline-none max-w-full h-full [&_ol]:list-decimal [&_ol]:text-white [&_ul]:list-disc [&_ul]:text-white [&_table]:border [&_table]:border-collapse [&_table]:w-full [&_th]:border [&_th]:border-gray-600 [&_th]:bg-[#333333] [&_th]:text-white [&_th]:px-4 [&_th]:py-2 [&_td]:border [&_td]:border-gray-600 [&_td]:bg-[#1a1a1a] [&_td]:text-white [&_td]:px-4 [&_td]:py-2 [&_tr:nth-child(even)]:bg-[#222222] [&_strong]:text-white [&_em]:text-white [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_h4]:text-white [&_h5]:text-white [&_h6]:text-white [&_s]:text-white`,
+			},
+			handleDOMEvents: {
+				keydown: (view, event) => {
+					if (event.key === '/') {
+						const { top, left } = view.coordsAtPos(view.state.selection.from);
+						setSlashPopupPosition({ top, left });
+						setShowSlashPopup(true);
+						setTextContext("");
+						return true;
+					}
+					return false;
+				},
+				contextmenu: (view, event) => {
+					event.preventDefault();
+					const selection = view.state.selection;
+					if (selection.empty) {
+						setShowSlashPopup(false);
+						return false;
+					}
+					const selectedText = view.state.doc.textBetween(selection.from, selection.to);
+					setTextContext(selectedText);
+					const { top, left } = view.coordsAtPos(selection.from);
+					setSlashPopupPosition({ top, left });
+					setShowSlashPopup(true);
+					return true;
+				},
 			},
 		},
 		onUpdate: ({ editor }) => {
@@ -82,6 +115,28 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 			editor.commands.setContent(initialText);
 		}
 	}, [initialText]);
+
+	useEffect(() => {
+
+	}, [addData]);
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (slashPopupRef.current && !slashPopupRef.current.contains(event.target as Node)) {
+				setShowSlashPopup(false);
+			}
+		};
+
+		if (showSlashPopup) {
+			document.addEventListener('mousedown', handleClickOutside);
+		} else {
+			document.removeEventListener('mousedown', handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, [showSlashPopup]);
 
 	return (
 		<div className="w-full h-full flex flex-col bg-[#0F0F10]">
@@ -173,6 +228,32 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 			</div>
 
 			<EditorContent editor={editor} className='h-full w-full mt-10' />
+
+			{showSlashPopup && (
+				<div
+					ref={slashPopupRef}
+					className="absolute bg-neutral-900 border border-neutral-700 rounded-xl shadow-2xl z-10 backdrop-blur-sm bg-opacity-95 overflow-hidden"
+					style={{ top: slashPopupPosition.top, left: slashPopupPosition.left }}
+				>
+					<div className="max-h-[300px] overflow-y-auto">
+						{(textContext ? selectedTextOptions : slashOptions).map((option, index) => (
+							<button
+								key={index}
+								className="w-full px-4 py-2.5 text-left hover:bg-neutral-800 transition-colors duration-150 flex items-center gap-3 text-neutral-200 text-sm font-medium focus:outline-none focus:bg-neutral-800"
+								onClick={() => {
+									option.action();
+									setShowSlashPopup(false);
+								}}
+							>
+								<span className="flex-shrink-0 w-5 h-5 flex items-center justify-center  bg-neutral-800 rounded-md text-neutral-400">
+									/
+								</span>
+								{option.label}
+							</button>
+						))}
+					</div>
+				</div>
+			)}
 		</div>
 	)
 }

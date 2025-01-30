@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     console.log(messages);
 
     const result = streamText({
-        model: google('gemini-1.5-mini'),
+        model: google('gemini-1.5-flash'),
         messages,
         tools: {
             get_weather_data: tool({
@@ -26,19 +26,32 @@ export async function POST(req: Request) {
                 parameters: z.object({
                     location: z.string().describe('The location.'),
                 }),
-                execute: async ({ location }: { location: string }) => {
+                execute: async ({ location }: { location: string; }) => {
                     const apiKey = process.env.OPENWEATHER_API_KEY;
-                    const response = await fetch(
-                        `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}`
-                    );
-                    const data = await response.json();
-                    console.log("Weather Tool Executed:", data); // Ensure this logs the correct data
-                    return data; // Ensure this return is passed into AI output
+                    try {
+                        const response = await fetch(
+                            `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}`
+                        );
+                        const data = await response.json();
+
+                        if (data.cod !== 200) {
+                            return { error: data.message };
+                        }
+
+                        console.log("Weather Tool Executed:", data);
+                        return data;
+                    } catch (error) {
+                        console.error("Weather Tool Error:", error);
+                        return { error: "Failed to fetch weather data" };
+                    }
                 },
             }),
         },
+        maxRetries: 3,
+        maxSteps: 3
     });
-    
+
+    // Stream the response back to the client
     for await (const textPart of result.textStream) {
         process.stdout.write(textPart);
     }
