@@ -14,7 +14,7 @@ export const EditorHome = () => {
 
                     <div className="text-center space-y-2">
                         <p className="text-xl italic opacity-90">
-                            "Σκέψη Ελεύθερη, Γνώση Αιώνια"
+                            `Σκέψη Ελεύθερη, Γνώση Αιώνια`
                         </p>
                         <p className="text-sm opacity-70">
                             (Free Thought, Eternal Knowledge)
