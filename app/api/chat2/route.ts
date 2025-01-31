@@ -1,7 +1,7 @@
-import { google } from '@ai-sdk/google';
-import { generateText, tool } from 'ai';
-import Exa from "exa-js"
 import { z } from 'zod';
+import Exa from "exa-js";
+import { generateText, tool } from 'ai';
+import { google } from '@ai-sdk/google';
 
 export const maxDuration = 30;
 const exa = new Exa(process.env.EXA_API_KEY);
@@ -62,13 +62,38 @@ export async function POST(req: Request) {
                         if (!apiKey) {
                             return { error: "Missing Exa API key" };
                         }
-                        console.log("Searcahble form of data: " + shortData);
                         try {
                             const response = await exa.search(
                                 shortData,
                                 {
-                                    includeDomains: ["arxiv.org"],
-                                    numResults: 4
+                                    numResults: 4,
+                                }
+                            )
+                            return {
+                                results: response.results
+                            };
+                        } catch (error) {
+                            console.error("Exa api error:", error);
+                            return { error: "Failed to fetch ea api" };
+                        }
+                    },
+                }),
+                get_related_posts_data: tool({
+                    description: 'Get the related X(Twitter) posts to this data',
+                    parameters: z.object({
+                        shortData: z.string().describe('The searchable form of the provided data'),
+                    }),
+                    execute: async ({ shortData }: { shortData: string }) => {
+                        const apiKey = process.env.EXA_API_KEY;
+                        if (!apiKey) {
+                            return { error: "Missing Exa API key" };
+                        }
+                        try {
+                            const response = await exa.search(
+                                shortData,
+                                {
+                                    includeDomains: ["x.com", "twitter.com"],
+                                    numResults: 4,
                                 }
                             )
                             return {

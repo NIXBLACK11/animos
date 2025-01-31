@@ -1,14 +1,15 @@
 "use client"
 
+import { useAtom } from "jotai";
 import { FiSidebar } from "react-icons/fi";
-import { createFileState, createFolderState, fileState, newCompPathState, rootState } from "@/states/state";
 import { useEffect, useState } from "react";
 import { TipTap } from "@/components/TipTap";
 import { Sidebar } from "@/components/Sidebar";
+import { EditorHome } from "@/components/EditorHome";
 import { FolderStructure } from "@/types/FolderStructure";
 import { SelectFolder } from "@/components/ui/SelectFolder";
 import { getFolderStructure } from "@/utils/getFolderStructure";
-import { useAtom } from "jotai";
+import { createFileState, createFolderState, fileState, newCompPathState, rootState } from "@/states/state";
 
 export default function Home() {
     const [fileText, setFileText] = useState("");
@@ -165,7 +166,7 @@ export default function Home() {
     }, [createFolderName]);
 
     return (
-        <div className="h-screen w-screen max-w-screen overflow-x-hidden text-white bg-[#0F0F10]">
+        <div className="h-screen w-screen max-w-screen overflow-x-hidden text-white bg-[#0A0A0A]">
             {(!selectedPath) ?
                 <SelectFolder selectedPath={selectedPath} setSelectedPath={setSelectedPath} />
                 :
@@ -178,7 +179,11 @@ export default function Home() {
                                 )}
                             </div>
                             <div className="w-10/12">
-                                <TipTap initialText={initialText} setFileText={setFileText} />
+                                {filePath == '' ?
+                                    <EditorHome />
+                                    :
+                                    <TipTap initialText={initialText} setFileText={setFileText} />
+                                }
                             </div>
                         </div>
                         :
@@ -196,7 +201,11 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className="w-[97%]">
-                                <TipTap initialText={initialText} setFileText={setFileText} />
+                                {filePath == '' ?
+                                    <EditorHome />
+                                    :
+                                    <TipTap initialText={initialText} setFileText={setFileText} />
+                                }
                             </div>
                         </div>
                     }
