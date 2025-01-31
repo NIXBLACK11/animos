@@ -64,11 +64,13 @@ export async function POST(req: Request) {
                         if (!apiKey) {
                             return { error: "Missing Exa API key" };
                         }
+                        console.log("inside the research paper", shortData);
                         try {
                             const response = await exa.search(
                                 shortData,
                                 {
                                     numResults: 4,
+                                    category: 'research paper',
                                 }
                             )
                             return {

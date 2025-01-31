@@ -66,7 +66,7 @@ export const answerQuestionWeb = async (context: string): Promise<string> => {
 
 export const findRelatedPapers = async (context: string): Promise<string> => {
     try {
-        context += `Can you get the related papers to this: ${context}?`
+        context += `Can you get the related papers to this: ${context}? and also return the links to each`
         const response = await fetch("/api/chat2", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
