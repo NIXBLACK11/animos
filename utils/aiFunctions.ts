@@ -1,4 +1,4 @@
-export const findContext = async (context: string) => {
+export const findContext = async (context: string): Promise<string> => {
     try {
         const response = await fetch("/api/chat2", {
             method: "POST",
@@ -12,9 +12,9 @@ export const findContext = async (context: string) => {
 
         const data = await response.json();
 
-        return data;
+        return data.text;
     } catch (error) {
         console.error("Error fetching context:", error);
-        return { error: "Failed to fetch context" };
+        return "";
     }
 };

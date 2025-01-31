@@ -1,4 +1,4 @@
-import { useEditor, EditorContent } from '@tiptap/react'
+import { useEditor, EditorContent, generateHTML } from '@tiptap/react'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import StarterKit from '@tiptap/starter-kit'
 import Document from '@tiptap/extension-document'
@@ -15,6 +15,7 @@ import { useEffect, useState, useRef } from 'react'
 import { findContext } from '@/utils/aiFunctions'
 import { useAtom } from 'jotai'
 import { loadingState } from '@/states/state'
+import { markdownToTiptapJSON } from '@/utils/markdownToTipTapJSON'
 
 const lowlight = createLowlight(common)
 
@@ -24,9 +25,9 @@ interface TipTapProps {
 }
 
 export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
+	const [, setLoading] = useAtom(loadingState);
 	const [textContext, setTextContext] = useState("");
 	const [addData, setAddData] = useState<string>("");
-	const [loading, setLoading] = useAtom(loadingState);
 	const [showSlashPopup, setShowSlashPopup] = useState(false);
 	const [showTableDropdown, setShowTableDropdown] = useState(false);
 	const [selectionTo, setSelectionTo] = useState<number | null>(null);
@@ -56,11 +57,12 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 	];
 
 	const selectedTextOptions = [
-		{ 	label: 'Ask Ai for context',
+		{
+			label: 'Ask Ai for context',
 			action: async () => {
 				setLoading(true);
 				setAddData(await findContext(textContext))
-				setLoading(false); 
+				setLoading(false);
 			}
 		},
 		{ label: 'Bold', action: () => editor?.chain().focus().toggleBold().run() },
@@ -134,14 +136,19 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 			});
 		}
 	}, [editor]);
-	
+
 	useEffect(() => {
-		if (addData && editor && selectionTo !== null) {
-			editor.commands.insertContentAt(selectionTo, "\n");
-			editor.commands.insertContentAt(selectionTo+2, addData);
-			setAddData("");
-			setSelectionTo(null);
+		const insertIntoEditor = async () => {
+
+			if (addData && editor && selectionTo !== null) {
+				const formattedHTML = await markdownToTiptapJSON(addData);
+				editor.commands.insertContentAt(selectionTo, formattedHTML);
+
+				setAddData("");
+				setSelectionTo(null);
+			}
 		}
+		insertIntoEditor();
 	}, [addData, selectionTo]);
 
 	useEffect(() => {
