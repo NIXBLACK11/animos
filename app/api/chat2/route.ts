@@ -1,8 +1,10 @@
 import { google } from '@ai-sdk/google';
 import { generateText, tool } from 'ai';
+import Exa from "exa-js"
 import { z } from 'zod';
 
 export const maxDuration = 30;
+const exa = new Exa(process.env.EXA_API_KEY);
 
 export async function POST(req: Request) {
     try {
@@ -47,6 +49,34 @@ export async function POST(req: Request) {
                         } catch (error) {
                             console.error("Weather Tool Error:", error);
                             return { error: "Failed to fetch weather data" };
+                        }
+                    },
+                }),
+                get_related_papers_data: tool({
+                    description: 'Get the related papers to a data',
+                    parameters: z.object({
+                        shortData: z.string().describe('The searchable form of the provided data'),
+                    }),
+                    execute: async ({ shortData }: { shortData: string }) => {
+                        const apiKey = process.env.EXA_API_KEY;
+                        if (!apiKey) {
+                            return { error: "Missing Exa API key" };
+                        }
+                        console.log("Searcahble form of data: " + shortData);
+                        try {
+                            const response = await exa.search(
+                                shortData,
+                                {
+                                    includeDomains: ["arxiv.org"],
+                                    numResults: 4
+                                }
+                            )
+                            return {
+                                results: response.results
+                            };
+                        } catch (error) {
+                            console.error("Exa api error:", error);
+                            return { error: "Failed to fetch ea api" };
                         }
                     },
                 }),
