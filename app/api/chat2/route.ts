@@ -27,7 +27,7 @@ export async function POST(req: Request) {
                         if (!apiKey) {
                             return { error: "Missing OpenWeather API key" };
                         }
-
+                        console.log("brother, send location: " + location);
                         try {
                             const response = await fetch(
                                 `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(location)}&appid=${apiKey}&units=metric`
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
                                 return { error: data.message };
                             }
 
-                            console.log("Weather Tool Executed:", data);
+                            // console.log("Weather Tool Executed:", data);
                             return {
                                 location: data.name,
                                 temperature: data.main.temp,
