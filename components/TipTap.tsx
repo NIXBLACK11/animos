@@ -1,4 +1,4 @@
-import { useEditor, EditorContent, generateHTML } from '@tiptap/react'
+import { useEditor, EditorContent } from '@tiptap/react'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import StarterKit from '@tiptap/starter-kit'
 import Document from '@tiptap/extension-document'
