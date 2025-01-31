@@ -13,6 +13,8 @@ import { common, createLowlight } from 'lowlight'
 import { FaAngleDown, FaBold, FaHeading, FaItalic, FaListOl, FaListUl, FaStrikethrough, FaTable } from 'react-icons/fa'
 import { useEffect, useState, useRef } from 'react'
 import { findContext } from '@/utils/aiFunctions'
+import { useAtom } from 'jotai'
+import { loadingState } from '@/states/state'
 
 const lowlight = createLowlight(common)
 
@@ -24,6 +26,7 @@ interface TipTapProps {
 export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 	const [textContext, setTextContext] = useState("");
 	const [addData, setAddData] = useState<string>("");
+	const [loading, setLoading] = useAtom(loadingState);
 	const [showSlashPopup, setShowSlashPopup] = useState(false);
 	const [showTableDropdown, setShowTableDropdown] = useState(false);
 	const [selectionTo, setSelectionTo] = useState<number | null>(null);
@@ -53,7 +56,13 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 	];
 
 	const selectedTextOptions = [
-		{ label: 'Ask Ai for context', action: async () => setAddData(await findContext(textContext)) },
+		{ 	label: 'Ask Ai for context',
+			action: async () => {
+				setLoading(true);
+				setAddData(await findContext(textContext))
+				setLoading(false); 
+			}
+		},
 		{ label: 'Bold', action: () => editor?.chain().focus().toggleBold().run() },
 		{ label: 'Italic', action: () => editor?.chain().focus().toggleItalic().run() },
 		{ label: 'Strike', action: () => editor?.chain().focus().toggleStrike().run() },

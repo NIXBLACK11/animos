@@ -11,3 +11,5 @@ export const createFileState = atom('');
 export const createFolderState = atom('');
 
 export const newCompPathState = atom('');
+
+export const loadingState = atom(false);
