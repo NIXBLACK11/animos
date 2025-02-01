@@ -53,9 +53,9 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 	];
 
 	const slashOptions = [
-		{ label: 'Search similar articles', action: () => alert('Search similar articles') },
-		{ label: 'Random', action: () => alert('Random') },
-		{ label: 'Random', action: () => alert('Random') },
+		{ label: 'Suggest ideas', action: () => window.open('https://github.com/NIXBLACK11/animos/issues', '_blank') },
+		{ label: 'Suggest ideas', action: () => window.open('https://github.com/NIXBLACK11/animos/issues', '_blank') },
+		{ label: 'Suggest ideas', action: () => window.open('https://github.com/NIXBLACK11/animos/issues', '_blank') },
 	];
 
 	const selectedTextOptions = [
