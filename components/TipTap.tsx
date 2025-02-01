@@ -12,7 +12,7 @@ import TableRow from '@tiptap/extension-table-row'
 import { common, createLowlight } from 'lowlight'
 import { FaAngleDown, FaBold, FaHeading, FaItalic, FaListOl, FaListUl, FaStrikethrough, FaTable } from 'react-icons/fa'
 import { useEffect, useState, useRef } from 'react'
-import { answerQuestion, answerQuestionWeb, findContext, findRelatedPapers, findRelatedPosts } from '@/utils/aiFunctions'
+import { answerQuestion, answerQuestionWeb, correctGrammar, findContext, findRelatedPapers, findRelatedPosts } from '@/utils/aiFunctions'
 import { useAtom } from 'jotai'
 import { loadingState } from '@/states/state'
 import { markdownToTiptapJSON } from '@/utils/markdownToTipTapJSON'
@@ -28,9 +28,11 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 	const [, setLoading] = useAtom(loadingState);
 	const [textContext, setTextContext] = useState("");
 	const [addData, setAddData] = useState<string>("");
+	const [replaceData, setReplaceData] = useState<string>("");
 	const [showSlashPopup, setShowSlashPopup] = useState(false);
 	const [showTableDropdown, setShowTableDropdown] = useState(false);
 	const [selectionTo, setSelectionTo] = useState<number | null>(null);
+	const [selectionFrom, setSelectionFrom] = useState<number | null>(null);
 	const [showHeadingDropdown, setShowHeadingDropdown] = useState(false);
 	const [slashPopupPosition, setSlashPopupPosition] = useState({ top: 0, left: 0 });
 
@@ -90,6 +92,13 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 			action: async () => {
 				setLoading(true);
 				setAddData(await findRelatedPosts(textContext));
+				setLoading(false);
+			}
+		}, {
+			label: 'Ask AI to correct grammar',
+			action: async () => {
+				setLoading(true);
+				setReplaceData(await correctGrammar(textContext));
 				setLoading(false);
 			}
 		},
@@ -156,8 +165,9 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 	useEffect(() => {
 		if (editor) {
 			editor.on("selectionUpdate", () => {
-				const { to } = editor.state.selection;
+				const { from, to } = editor.state.selection;
 				setSelectionTo(to);
+				setSelectionFrom(from);
 			});
 		}
 	}, [editor]);
@@ -175,6 +185,23 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 		}
 		insertIntoEditor();
 	}, [addData, selectionTo]);
+
+	useEffect(() => {
+		const insertIntoEditor = async () => {
+
+			if (replaceData && editor && selectionTo !== null && selectionFrom !== null) {
+				const formattedHTML = await markdownToTiptapJSON(replaceData);
+				editor.commands.deleteRange({ from: selectionFrom, to: selectionTo });
+
+				editor.commands.insertContentAt(selectionFrom, formattedHTML);
+
+				setReplaceData("");
+				setSelectionFrom(null);
+				setSelectionTo(null);
+			}
+		}
+		insertIntoEditor();
+	}, [replaceData, selectionFrom, selectionTo]);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {

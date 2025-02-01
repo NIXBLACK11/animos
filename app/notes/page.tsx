@@ -166,7 +166,7 @@ export default function Home() {
     }, [createFolderName]);
 
     return (
-        <div className="h-screen w-screen max-w-screen overflow-x-hidden text-white bg-[#0A0A0A]">
+        <div className="h-screen w-screen max-w-screen overflow-x-hidden text-white bg-[#0F0F10]">
             {(!selectedPath) ?
                 <SelectFolder selectedPath={selectedPath} setSelectedPath={setSelectedPath} />
                 :
@@ -178,7 +178,7 @@ export default function Home() {
                                     <Sidebar hide={hide} setHide={setHide} structure={fileStructure} />
                                 )}
                             </div>
-                            <div className="w-10/12">
+                            <div className="w-10/12 bg-[#0F0F10]">
                                 {filePath == '' ?
                                     <EditorHome />
                                     :
@@ -200,7 +200,7 @@ export default function Home() {
                                     </button>
                                 </div>
                             </div>
-                            <div className="w-[97%]">
+                            <div className="w-[97%] bg-[#0F0F10]">
                                 {filePath == '' ?
                                     <EditorHome />
                                     :

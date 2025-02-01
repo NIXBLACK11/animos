@@ -109,7 +109,7 @@ export async function POST(req: Request) {
                         }
                     },
                 }),
-                search_web: tool({
+                web_search: tool({
                     description: 'Search the apprpriate data from the web for this query',
                     parameters: z.object({
                         query: z.string().describe('The search query'),
@@ -119,24 +119,21 @@ export async function POST(req: Request) {
                         if (!apiKey) {
                             return { error: "Missing Tavily API key" };
                         }
-                        console.log("Search the web brother"+query);
+                        console.log("Searching the web for:", query);
                         try {
-                            const response = await tvly.search(
-                                query, {
+                            const response = await tvly.search(query, {
                                 searchDepth: "basic",
-                                maxResults: 5,
-                                includeImages: false,
-                                includeAnswer: true,
-                                includeRawContent: true,
+                                maxResults: 4,
                             });
+                            console.log("Tavily API response:", response);
                             return {
                                 results: response.results
                             };
                         } catch (error) {
-                            console.error("Exa api error:", error);
-                            return { error: "Failed to fetch exa api" };
+                            console.error("Tavily API error:", error);
+                            return { error: "Failed to fetch Tavily API" };
                         }
-                    },
+                    }
                 }),
             },
             maxRetries: 3,
