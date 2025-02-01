@@ -44,7 +44,7 @@ export const answerQuestion = async (context: string): Promise<string> => {
 
 export const answerQuestionWeb = async (context: string): Promise<string> => {
     try {
-        context = `Can you help me answer this sentence, and search the web for the answer using "search_web" function only and dont ask what function to use, if you are not sure about the specific thing to return atleast return the relevent links you got ${context}?`
+        context = `Can you help me answer this sentence, and search the web for the answer using "search_web" function only and dont ask what function to use, if you are not sure about the specific thing to return atleast return the relevent links you got ${context}?Also always return the links you get back always`
         console.log(context)
         const response = await fetch("/api/chat2", {
             method: "POST",

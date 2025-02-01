@@ -1,12 +1,12 @@
 import { z } from 'zod';
 import Exa from "exa-js";
-import { tavily } from "@tavily/core";
+// import { tavily } from "@tavily/core";
 import { generateText, tool } from 'ai';
 import { google } from '@ai-sdk/google';
 
 export const maxDuration = 30;
 const exa = new Exa(process.env.EXA_API_KEY);
-const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
+// const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
 
 export async function POST(req: Request) {
     try {
@@ -121,11 +121,13 @@ export async function POST(req: Request) {
                         }
                         console.log("Searching the web for:", query);
                         try {
-                            const response = await tvly.search(query, {
-                                searchDepth: "basic",
-                                maxResults: 4,
-                            });
-                            console.log("Tavily API response:", response);
+                            const response = await exa.search(
+                                query,
+                                {
+                                    numResults: 4,
+                                }
+                            )
+                            console.log(response.results);
                             return {
                                 results: response.results
                             };
