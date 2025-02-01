@@ -89,7 +89,7 @@ export const findRelatedPapers = async (context: string): Promise<string> => {
 
 export const findRelatedPosts = async (context: string): Promise<string> => {
     try {
-        context = `Can you get the related twitter(X) posts to this and search using the "get_related_posts_data" function only and dont ask what function to use, if you are not sure about the specific thing to return atleast return the relevent links you got ${context}? and also return the link along with a little info from each`
+        context = `Can you get the related twitter(X) posts to this and search using the "get_related_posts_data" function only and dont ask what function to use, if you are not sure about the specific thing to return atleast return the relevent links you got ${context}? and also return the link with the title`
         const response = await fetch("/api/chat2", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
