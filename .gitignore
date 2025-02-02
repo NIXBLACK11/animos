@@ -40,3 +40,5 @@ client-id.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+links.md

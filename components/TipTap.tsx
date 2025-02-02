@@ -12,7 +12,7 @@ import TableRow from '@tiptap/extension-table-row'
 import { common, createLowlight } from 'lowlight'
 import { FaAngleDown, FaBold, FaHeading, FaItalic, FaListOl, FaListUl, FaStrikethrough, FaTable } from 'react-icons/fa'
 import { useEffect, useState, useRef } from 'react'
-import { answerQuestion, answerQuestionWeb, correctGrammar, findContext, findRelatedPapers, findRelatedPosts } from '@/utils/aiFunctions'
+import { answerQuestion, answerQuestionWeb, answerQuestionWebLinks, correctGrammar, findContext, findRelatedPapers, findRelatedPosts } from '@/utils/aiFunctions'
 import { useAtom } from 'jotai'
 import { loadingState } from '@/states/state'
 import { markdownToTiptapJSON } from '@/utils/markdownToTipTapJSON'
@@ -71,6 +71,13 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 			action: async () => {
 				setLoading(true);
 				setAddData(await answerQuestionWeb(textContext));
+				setLoading(false);
+			}
+		}, {
+			label: 'Ask AI for answer(web search to get links)',
+			action: async () => {
+				setLoading(true);
+				setAddData(await answerQuestionWebLinks(textContext));
 				setLoading(false);
 			}
 		}, {

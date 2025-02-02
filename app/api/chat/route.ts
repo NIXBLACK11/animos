@@ -52,9 +52,9 @@ export async function POST(req: Request) {
     });
 
     // Stream the response back to the client
-    for await (const textPart of result.textStream) {
-        process.stdout.write(textPart);
-    }
+    // for await (const textPart of result.textStream) {
+    //     process.stdout.write(textPart);
+    // }
 
     return result.toDataStreamResponse();
 }

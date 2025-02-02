@@ -1,12 +1,12 @@
 import { z } from 'zod';
 import Exa from "exa-js";
-// import { tavily } from "@tavily/core";
+import { tavily } from "@tavily/core";
 import { generateText, tool } from 'ai';
 import { google } from '@ai-sdk/google';
 
 export const maxDuration = 30;
 const exa = new Exa(process.env.EXA_API_KEY);
-// const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
+const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
 
 export async function POST(req: Request) {
     try {
@@ -110,6 +110,32 @@ export async function POST(req: Request) {
                     },
                 }),
                 web_search: tool({
+                    description: 'Search the apprpriate data from the web for this query',
+                    parameters: z.object({
+                        query: z.string().describe('The search query'),
+                    }),
+                    execute: async ({ query }: { query: string }) => {
+                        const apiKey = process.env.TAVILY_API_KEY;
+                        if (!apiKey) {
+                            return { error: "Missing Tavily API key" };
+                        }
+                        console.log("Searching the web for:", query);
+                        try {
+                            const response = await tvly.search(query, {
+                                searchDepth: "basic",
+                                maxResults: 4,
+                            });
+                            console.log("Tavily API response:", response);
+                            return {
+                                results: response.results
+                            };
+                        } catch (error) {
+                            console.error("Tavily API error:", error);
+                            return { error: "Failed to fetch Tavily API" };
+                        }
+                    }
+                }),
+                web_search_links: tool({
                     description: 'Search the apprpriate data from the web for this query',
                     parameters: z.object({
                         query: z.string().describe('The search query'),
