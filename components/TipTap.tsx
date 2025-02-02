@@ -12,7 +12,7 @@ import TableRow from '@tiptap/extension-table-row'
 import { common, createLowlight } from 'lowlight'
 import { FaAngleDown, FaBold, FaHeading, FaItalic, FaListOl, FaListUl, FaStrikethrough, FaTable } from 'react-icons/fa'
 import { useEffect, useState, useRef } from 'react'
-import { answerQuestion, answerQuestionWeb, answerQuestionWebLinks, correctGrammar, findContext, findRelatedPapers, findRelatedPosts } from '@/utils/aiFunctions'
+import { answerQuestion, answerQuestionWeb, answerQuestionWebLinks, correctGrammar, findContext, findRelatedPapers, findRelatedPosts, getPromptAnswer } from '@/utils/aiFunctions'
 import { useAtom } from 'jotai'
 import { loadingState } from '@/states/state'
 import { markdownToTiptapJSON } from '@/utils/markdownToTipTapJSON'
@@ -25,15 +25,18 @@ interface TipTapProps {
 }
 
 export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
+	const [prompt, setPrompt] = useState("");
 	const [, setLoading] = useAtom(loadingState);
+	const [template, setTemplate] = useState("");
 	const [textContext, setTextContext] = useState("");
 	const [addData, setAddData] = useState<string>("");
+	const [inputPopup, setInputPopup] = useState(false);
 	const [replaceData, setReplaceData] = useState<string>("");
 	const [showSlashPopup, setShowSlashPopup] = useState(false);
 	const [showTableDropdown, setShowTableDropdown] = useState(false);
 	const [selectionTo, setSelectionTo] = useState<number | null>(null);
-	const [selectionFrom, setSelectionFrom] = useState<number | null>(null);
 	const [showHeadingDropdown, setShowHeadingDropdown] = useState(false);
+	const [selectionFrom, setSelectionFrom] = useState<number | null>(null);
 	const [slashPopupPosition, setSlashPopupPosition] = useState({ top: 0, left: 0 });
 
 	const slashPopupRef = useRef<HTMLDivElement>(null);
@@ -53,9 +56,12 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 	];
 
 	const slashOptions = [
-		{ label: 'Suggest ideas', action: () => window.open('https://github.com/NIXBLACK11/animos/issues', '_blank') },
-		{ label: 'Suggest ideas', action: () => window.open('https://github.com/NIXBLACK11/animos/issues', '_blank') },
-		{ label: 'Suggest ideas', action: () => window.open('https://github.com/NIXBLACK11/animos/issues', '_blank') },
+		{
+			label: 'Ask AI for anything',
+			action: async () => {
+				setInputPopup(true);
+			}
+		}, { label: 'Suggest ideas', action: () => window.open('https://github.com/NIXBLACK11/animos/issues', '_blank') },
 	];
 
 	const selectedTextOptions = [
@@ -110,6 +116,15 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 			}
 		},
 	];
+
+	const handlePrompt = async () => {
+		if (!prompt) return;
+		setInputPopup(false);
+		setLoading(true);
+		setTemplate(await getPromptAnswer(prompt));
+		setPrompt("");
+		setLoading(false);
+	}
 
 	const editor = useEditor({
 		extensions: [
@@ -209,6 +224,23 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 		}
 		insertIntoEditor();
 	}, [replaceData, selectionFrom, selectionTo]);
+
+	useEffect(() => {
+		const setTemplateInEditor = async () => {
+			if (template && editor && slashPopupPosition) {
+				const { from } = editor.state.selection;
+
+				editor.commands.deleteRange({ from: from - 1, to: from });
+
+				const formattedHTML = await markdownToTiptapJSON(template);
+				editor.commands.insertContentAt(from - 1, formattedHTML);
+
+				setTemplate("");
+			}
+		};
+
+		setTemplateInEditor();
+	}, [template, slashPopupPosition]);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -341,6 +373,43 @@ export const TipTap: React.FC<TipTapProps> = ({ initialText, setFileText }) => {
 								{option.label}
 							</button>
 						))}
+					</div>
+				</div>
+			)}
+
+			{inputPopup && (
+				<div className="min-h-screen min-w-screen bg-opacity-85 bg-[#0F0F10] flex justify-center items-center text-white fixed inset-0 z-20">
+					<div className="bg-[#1A1A1E] rounded-lg p-8 w-full max-w-md">
+						<h1 className="text-2xl font-bold mb-6 text-center">Enter your prompt</h1>
+
+						<div className="space-y-4">
+							<textarea
+								value={prompt}
+								onChange={(e) => setPrompt(e.target.value)}
+								placeholder="Enter your prompt here..."
+								className="w-full bg-[#2C2C2E] rounded-md p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+								rows={4}
+							/>
+
+							<div className="flex gap-4">
+								<button
+									type="submit"
+									className="flex-1 bg-blue-600 hover:bg-blue-700 transition-colors py-3 rounded-md font-medium"
+									onClick={() => {
+										handlePrompt();
+									}}
+								>
+									Submit
+								</button>
+
+								<button
+									onClick={() => setInputPopup(false)}
+									className="flex-1 bg-[#2C2C2E] hover:bg-[#3A3A3E] transition-colors py-3 rounded-md"
+								>
+									Cancel
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
 			)}
