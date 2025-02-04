@@ -7,6 +7,7 @@ import FolderTree from "./ui/FolderTree";
 import { FiSidebar } from "react-icons/fi";
 import { loadingState } from "@/states/state";
 import { FolderStructure } from "@/types/FolderStructure";
+import { SidebarOptions } from "./ui/SidebarOptions";
 
 interface SideBarProps {
     hide: boolean;
@@ -44,6 +45,7 @@ export const Sidebar: React.FC<SideBarProps> = ({ hide, setHide, structure }) =>
                 </button>
             </div>
             <FolderTree structure={structure} />
+            <SidebarOptions />
         </div>
     )
 }
