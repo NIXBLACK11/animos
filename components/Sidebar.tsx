@@ -8,6 +8,7 @@ import { FiSidebar } from "react-icons/fi";
 import { loadingState } from "@/states/state";
 import { FolderStructure } from "@/types/FolderStructure";
 import { SidebarOptions } from "./ui/SidebarOptions";
+import { FaChevronUp } from "react-icons/fa";
 
 interface SideBarProps {
     hide: boolean;
@@ -16,8 +17,9 @@ interface SideBarProps {
 }
 
 export const Sidebar: React.FC<SideBarProps> = ({ hide, setHide, structure }) => {
-    const [rotate, setRotate] = useState(360);
     const [loading,] = useAtom(loadingState);
+    const [rotate, setRotate] = useState(360);
+    const [optionHide, setOptionHide] = useState(false);
 
     useEffect(() => {
         if (loading) setRotate(360);
@@ -25,7 +27,7 @@ export const Sidebar: React.FC<SideBarProps> = ({ hide, setHide, structure }) =>
     }, [loading])
 
     return (
-        <div className="flex flex-col fixed w-2/12">
+        <div className="flex flex-col fixed w-2/12 h-screen">
             <div className="flex flex-row justify-between items-center m-4">
                 <motion.img
                     key={rotate}
@@ -44,8 +46,20 @@ export const Sidebar: React.FC<SideBarProps> = ({ hide, setHide, structure }) =>
                     <FiSidebar />
                 </button>
             </div>
-            <FolderTree structure={structure} />
-            <SidebarOptions />
+            <div className="flex flex-col flex-grow overflow-hidden">
+                <div className="flex-grow overflow-hidden">
+                    <FolderTree structure={structure} />
+                    {optionHide ? 
+                        <div 
+                            className="h-[5%] w-full bg-[#0A0A0A] border-neutral-800 flex justify-center items-center hover:bg-neutral-800"
+                            onClick={() => setOptionHide(!optionHide)}
+                        >
+                            <FaChevronUp />
+                        </div> :    
+                        <SidebarOptions setOptionHide={setOptionHide} />
+                    }
+                </div>
+            </div>
         </div>
     )
 }

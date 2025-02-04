@@ -64,7 +64,7 @@ const FolderItem: React.FC<FolderItemProps> = ({
 	return (
 		<div ref={folderItemRef}>
 			<div
-				className={`flex items-center cursor-pointer hover:bg-[#2A2A2E] py-1 text-white`}
+				className={`flex items-center cursor-pointer hover:bg-neutral-800 rounded-lg transition-colors py-1 text-neutral-400 hover:text-white`}
 				onClick={handleClick}
 				onContextMenu={handleRightClick}
 				style={{ paddingLeft: `${depth * 16}px` }}
@@ -163,15 +163,13 @@ interface FolderTreeProps {
 }
 
 export default function FolderTree({
-	structure,
+    structure,
 }: FolderTreeProps) {
-	return (
-		<div className="bg-[#0A0A0A] p-4 h-full">
-			<div className="bg-[#0A0A0A] rounded-lg p-2 max-h-[calc(100vh-250px)] overflow-y-auto custom-scrollbar">
-				<FolderItem
-					item={structure}
-				/>
-			</div>
-		</div>
-	);
+    return (
+        <div className="bg-[#0A0A0A] h-[95%] overflow-y-auto custom-scrollbar p-2">
+            <FolderItem
+                item={structure}
+            />
+        </div>
+    );
 }
