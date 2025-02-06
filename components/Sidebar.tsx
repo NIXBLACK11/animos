@@ -19,7 +19,7 @@ interface SideBarProps {
 export const Sidebar: React.FC<SideBarProps> = ({ hide, setHide, structure }) => {
     const [loading,] = useAtom(loadingState);
     const [rotate, setRotate] = useState(360);
-    const [optionHide, setOptionHide] = useState(false);
+    const [optionHide, setOptionHide] = useState(true);
 
     useEffect(() => {
         if (loading) setRotate(360);

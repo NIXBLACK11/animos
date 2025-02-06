@@ -29,7 +29,7 @@ export const SidebarOptions: React.FC<SidebarOptionsProps> = ({ setOptionHide })
                     >
                         <FaGithub className="mr-3 text-neutral-400 group-hover:text-white" size={20} />
                         <span className="text-neutral-400 group-hover:text-white text-sm">
-                            Connect GitHub
+                            Login with github
                         </span>
                     </button>
 
@@ -39,7 +39,7 @@ export const SidebarOptions: React.FC<SidebarOptionsProps> = ({ setOptionHide })
                     >
                         <FaGoogle className="mr-3 text-neutral-400 group-hover:text-white" size={20} />
                         <span className="text-neutral-400 group-hover:text-white text-sm">
-                            Connect Drive
+                            Login with Google
                         </span>
                     </button>
 
@@ -49,7 +49,7 @@ export const SidebarOptions: React.FC<SidebarOptionsProps> = ({ setOptionHide })
                     >
                         <FaPalette className="mr-3 text-neutral-400 group-hover:text-white" size={20} />
                         <span className="text-neutral-400 group-hover:text-white text-sm">
-                            Theme
+                            Select Model
                         </span>
                     </button>
 
