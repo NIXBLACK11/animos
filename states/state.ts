@@ -1,3 +1,4 @@
+import { UserData } from '@/types/UserData';
 import { atom } from 'jotai';
 
 export const rootState = atom('');
@@ -13,3 +14,5 @@ export const createFolderState = atom('');
 export const newCompPathState = atom('');
 
 export const loadingState = atom(false);
+
+export const userDataState = atom<UserData | null>(null);

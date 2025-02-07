@@ -1,11 +1,9 @@
 import React from 'react';
 import {
-    FaGithub,
-    FaGoogle,
     FaPalette,
-    FaCog,
     FaChevronDown
 } from 'react-icons/fa';
+import { GoogleLoginButton } from './GoogleLoginButton';
 
 interface SidebarOptionsProps {
     setOptionHide: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,25 +21,7 @@ export const SidebarOptions: React.FC<SidebarOptionsProps> = ({ setOptionHide })
 
             <div className="p-4">
                 <div className="flex flex-col space-y-4">
-                    <button
-                        className="flex items-center justify-start w-full p-3 hover:bg-neutral-800 rounded-lg transition-colors group"
-                        title="Connect to GitHub"
-                    >
-                        <FaGithub className="mr-3 text-neutral-400 group-hover:text-white" size={20} />
-                        <span className="text-neutral-400 group-hover:text-white text-sm">
-                            Login with github
-                        </span>
-                    </button>
-
-                    <button
-                        className="flex items-center justify-start w-full p-3 hover:bg-neutral-800 rounded-lg transition-colors group"
-                        title="Connect to Google Drive"
-                    >
-                        <FaGoogle className="mr-3 text-neutral-400 group-hover:text-white" size={20} />
-                        <span className="text-neutral-400 group-hover:text-white text-sm">
-                            Login with Google
-                        </span>
-                    </button>
+                    <GoogleLoginButton />
 
                     <button
                         className="flex items-center justify-start w-full p-3 hover:bg-neutral-800 rounded-lg transition-colors group"
@@ -50,16 +30,6 @@ export const SidebarOptions: React.FC<SidebarOptionsProps> = ({ setOptionHide })
                         <FaPalette className="mr-3 text-neutral-400 group-hover:text-white" size={20} />
                         <span className="text-neutral-400 group-hover:text-white text-sm">
                             Select Model
-                        </span>
-                    </button>
-
-                    <button
-                        className="flex items-center justify-start w-full p-3 hover:bg-neutral-800 rounded-lg transition-colors group"
-                        title="Settings"
-                    >
-                        <FaCog className="mr-3 text-neutral-400 group-hover:text-white" size={20} />
-                        <span className="text-neutral-400 group-hover:text-white text-sm">
-                            Settings
                         </span>
                     </button>
                 </div>
