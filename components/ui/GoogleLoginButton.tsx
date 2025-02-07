@@ -75,8 +75,8 @@ export const GoogleLoginButton = () => {
     const LoginGoogle = async () => {
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: "google",
-            // options: { redirectTo: `${window.location.origin}/notes` },
-            options: { redirectTo: `https://animos.nixblack.site/notes` },
+            options: { redirectTo: `${window.location.origin}/notes` },
+            // options: { redirectTo: `https://animos.nixblack.site/notes` },
         });
 
         if (error) {
