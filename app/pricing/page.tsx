@@ -29,19 +29,19 @@ const plans: Plan[] = [
         ],
         isPopular: true
     },
-    {
-        tier: "Pro-(Coming Soon)",
-        price: 49,
-        features: [
-            "All Premium features",
-            "Unlimited projects",
-            "24/7 dedicated support",
-            "50GB storage",
-            "Daily updates",
-            "Custom integrations",
-            "API access"
-        ]
-    }
+    // {
+    //     tier: "Pro-(Coming Soon)",
+    //     price: 49,
+    //     features: [
+    //         "All Premium features",
+    //         "Unlimited projects",
+    //         "24/7 dedicated support",
+    //         "50GB storage",
+    //         "Daily updates",
+    //         "Custom integrations",
+    //         "API access"
+    //     ]
+    // }
 ];
 
 export default function Pricing() {

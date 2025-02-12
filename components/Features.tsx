@@ -30,19 +30,19 @@ const plans: Plan[] = [
         ],
         isPopular: true
     },
-    {
-        tier: "Pro-(Coming Soon)",
-        price: 49,
-        features: [
-            "All Premium features",
-            "Unlimited projects",
-            "24/7 dedicated support",
-            "50GB storage",
-            "Daily updates",
-            "Custom integrations",
-            "API access"
-        ]
-    }
+    // {
+    //     tier: "Pro-(Coming Soon)",
+    //     price: 49,
+    //     features: [
+    //         "All Premium features",
+    //         "Unlimited projects",
+    //         "24/7 dedicated support",
+    //         "50GB storage",
+    //         "Daily updates",
+    //         "Custom integrations",
+    //         "API access"
+    //     ]
+    // }
 ];
 
 export const Features = () => {
@@ -57,11 +57,11 @@ export const Features = () => {
             <div className="h-[200vh]">
                 <AIWriting text={aiText} speed={4} />
             </div>
-            <div className="bg-[#000000] w-full  max-h-screen flex justify-center items-start text-center flex-col">
+            <div className="bg-[#000000] w-full h-[100vh] flex justify-center items-start text-center flex-col">
                 <h1 className="text-4xl text-white font-bold">Notice the difference? Try Animos for speed, accuracy, and effortless writing—never worry about typos again!</h1>
                 <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
                     <div className="text-center">
-                        <h1 className="text-4xl font-bold text-white">
+                        <h1 className="text-4xl font-bold text-white mt-20">
                             Choose Your Plan
                         </h1>
                         <p className="text-xl text-neutral-400 pb-5">
