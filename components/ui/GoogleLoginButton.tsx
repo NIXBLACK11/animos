@@ -101,7 +101,6 @@ export const GoogleLoginButton = () => {
             {userData ? (
                 <button
                     className="flex items-center justify-start w-full p-3 hover:bg-neutral-800 rounded-lg transition-colors group"
-                    title="Disconnect Google"
                     onClick={LogoutGoogle}
                 >
                     <FaGoogle className="mr-3 text-neutral-400 group-hover:text-white" size={20} />
@@ -110,11 +109,10 @@ export const GoogleLoginButton = () => {
             ) : (
                 <button
                     className="flex items-center justify-start w-full p-3 hover:bg-neutral-800 rounded-lg transition-colors group"
-                    title="Connect Google"
                     onClick={LoginGoogle}
                 >
                     <FaGoogle className="mr-3 text-neutral-400 group-hover:text-white" size={20} />
-                    <span className="text-neutral-400 group-hover:text-white text-sm">Login Google</span>
+                    <span className="text-neutral-400 group-hover:text-white text-sm">Login with Google</span>
                 </button>
             )}
         </>

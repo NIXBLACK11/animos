@@ -1,7 +1,7 @@
 import React from 'react';
 import {
-    FaPalette,
-    FaChevronDown
+    FaChevronDown,
+    FaExternalLinkAlt
 } from 'react-icons/fa';
 import { GoogleLoginButton } from './GoogleLoginButton';
 
@@ -12,9 +12,9 @@ interface SidebarOptionsProps {
 export const SidebarOptions: React.FC<SidebarOptionsProps> = ({ setOptionHide }) => {
     return (
         <div className="fixed bottom-0 left-0 w-2/12 bg-[#0A0A0A] border-t border-neutral-800">
-            <button 
+            <button
                 className='flex justify-center items-center w-full hover:bg-neutral-800 py-2'
-                onClick={()=>setOptionHide((prev)=>!prev)}
+                onClick={() => setOptionHide((prev) => !prev)}
             >
                 <FaChevronDown />
             </button>
@@ -25,11 +25,13 @@ export const SidebarOptions: React.FC<SidebarOptionsProps> = ({ setOptionHide })
 
                     <button
                         className="flex items-center justify-start w-full p-3 hover:bg-neutral-800 rounded-lg transition-colors group"
-                        title="Change Theme"
+                        onClick={() => {
+                            window.open('/pricing', '_blank');
+                        }}
                     >
-                        <FaPalette className="mr-3 text-neutral-400 group-hover:text-white" size={20} />
+                        <FaExternalLinkAlt className="mr-3 text-neutral-400 group-hover:text-white" size={20} />
                         <span className="text-neutral-400 group-hover:text-white text-sm">
-                            Select Model
+                            Plans & Pricing
                         </span>
                     </button>
                 </div>
